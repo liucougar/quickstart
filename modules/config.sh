@@ -284,6 +284,10 @@ sanity_check_config() {
   if [ -z "${timezone}" ]; then
     warn "timezone not set...assuming UTC"
     timezone=UTC
+  else
+    if [ ! -f "/usr/share/zoneinfo/${timezone}" ]; then
+      error "/usr/share/zoneinfo/${timezone} does not exist"
+    fi
   fi
   if [ -z "${kernel_sources}" ]; then
     warn "kernel_sources not set...assuming gentoo-sources"

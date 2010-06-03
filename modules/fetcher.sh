@@ -75,6 +75,16 @@ fetch_file() {
   ln -s "${uri}" "${localfile}"
 }
 
+#like fetch_file, but instead of symlinking it, it copys the file
+fetch_cp(){
+  local uri=$1
+  local localfile=$2
+
+  uri=$(echo "${uri}" | sed -e 's|^cp://||')
+  debug fetch_file "Copying local file ${uri} to ${localfile}"
+  cp "${uri}" "${localfile}"
+}
+
 fetch_tftp() {
   local uri=$1
   local localfile=$2

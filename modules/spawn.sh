@@ -3,6 +3,9 @@
 chroot_dir=/mnt/gentoo
 output_logfile=/tmp/installoutput.log
 
+#empty log
+echo "" > ${output_logfile}
+
 spawn() {
   local cmd=$1
 

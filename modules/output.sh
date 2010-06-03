@@ -9,6 +9,9 @@ NORMAL='\033[0m'
 
 logfile=/tmp/install.log
 
+#empty log
+echo "" > ${logfile}
+
 debug() {
   local func=$1
   local msg=$2

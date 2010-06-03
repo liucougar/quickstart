@@ -69,10 +69,12 @@ mountfs() {
   local type=$2
   local mountpoint=$3
   local mountopts=$4
+  local real_device=$5
 
   [ -z "${mountopts}" ] && mountopts="defaults"
   [ -z "${mountpoint}" ] && mountpoint="none"
-  local tmpmount="${device}:${type}:${mountpoint}:${mountopts}"
+  [ -z "${real_device}" ] && real_device="${device}"
+  local tmpmount="${device}:${type}:${mountpoint}:${mountopts}:${real_device}"
   if [ -n "${localmounts}" ]; then
     localmounts="${localmounts} ${tmpmount}"
   else

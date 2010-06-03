@@ -26,10 +26,12 @@ configure_bootloader_grub() {
       return 1
     fi
     echo -en "root (${grub_device},$(expr ${boot_minor} - 1))\nkernel /boot/${kernel} " >> ${chroot_dir}/boot/grub/grub.conf
+    #[ -z "${grub_kernel_root}" ] && grub_kernel_root=${root}
+    local grub_kernel_root="$(echo ${boot_root} | cut -d '|' -f3)"
     if [ -z "${initrd}" ]; then
-      echo "root=${root}" >> ${chroot_dir}/boot/grub/grub.conf
+      echo "root=${grub_kernel_root}" >> ${chroot_dir}/boot/grub/grub.conf
     else
-      echo "root=/dev/ram0 init=/linuxrc ramdisk=8192 real_root=${root} ${bootloader_kernel_args}" >> ${chroot_dir}/boot/grub/grub.conf
+      echo "root=/dev/ram0 init=/linuxrc ramdisk=8192 real_root=${grub_kernel_root} ${bootloader_kernel_args}" >> ${chroot_dir}/boot/grub/grub.conf
       echo -e "initrd /boot/${initrd}\n" >> ${chroot_dir}/boot/grub/grub.conf
     fi
   done

@@ -32,6 +32,7 @@ get_boot_and_root() {
   for mount in ${localmounts}; do
     local devnode=$(echo ${mount} | cut -d ':' -f1)
     local mountpoint=$(echo ${mount} | cut -d ':' -f3)
+    local real_root_devnode=$(echo ${mount} | cut -d ':' -f5)
     if [ "${mountpoint}" = "/" ]; then
       local root="${devnode}"
     elif [ "${mountpoint}" = "/boot" -o "${mountpoint}" = "/boot/" ]; then
@@ -41,7 +42,7 @@ get_boot_and_root() {
   if [ -z "${boot}" ]; then
     local boot="${root}"
   fi
-  echo "${boot}|${root}"
+  echo "${boot}|${root}|${real_root_devnode}"
 }
 
 get_device_from_devnode() {

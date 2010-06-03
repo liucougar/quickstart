@@ -240,7 +240,7 @@ setup_fstab() {
   echo -e "none\t/proc\tproc\tdefaults\t0 0\nnone\t/dev/shm\ttmpfs\tdefaults\t0 0" > ${chroot_dir}/etc/fstab
   for mount in ${localmounts}; do
     debug setup_fstab "mount is ${mount}"
-    local devnode=$(echo ${mount} | cut -d ':' -f1)
+    local devnode=$(echo ${mount} | cut -d ':' -f5)
     local type=$(echo ${mount} | cut -d ':' -f2)
     local mountpoint=$(echo ${mount} | cut -d ':' -f3)
     local mountopts=$(echo ${mount} | cut -d ':' -f4)

@@ -60,7 +60,7 @@ fetch_http_https_ftp() {
   local localfile=$2
 
   debug fetch_http_https_ftp "Fetching URL ${uri} to ${2}"
-  spawn "wget -O ${localfile} ${uri}"
+  spawn "wget --no-verbose -O ${localfile} ${uri}"
   local wget_exitcode=$?
   debug fetch_http_https_ftp "exit code from wget was ${wget_exitcode}"
   return ${wget_exitcode}

@@ -77,13 +77,15 @@ format - Formats a partition
 mountfs - Mounts a filesystem
 
   Usage:
-    mountfs <device> <type> <mountpoint> [mountopts]
+    mountfs <device> <type> <mountpoint> [mountopts [realdevice]] 
 
   Parameters:
     device     - the device to mount (such as /dev/hda2 or /dev/sdb4)
     type       - filesystem of device (use auto if you're not sure)
     mountpoint - the directory to mount the filesystem
     mountopts  - additional options to use when mounting
+    realdevice - device name in the new machine (if omitted, same as device,
+                 such as /dev/hda1)
 
 
 netmount - Mounts a network filesystem

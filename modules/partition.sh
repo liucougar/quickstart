@@ -7,7 +7,12 @@ get_device_size_in_mb() {
     device=$(readlink ${device})
   fi
   device=$(echo ${device} | sed -e 's:^/dev/::;s:/:\\/:g')
-  expr $(expr $(awk "/${device}\$/ { print \$3; }" /proc/partitions) / 1024) - 2 # just to make sure we don't go past the end of the drive
+  local size=$(awk "/${device}\$/ { print \$3; }" /proc/partitions)
+  if [ -z "${size}" ]; then
+    return 1
+  else
+    expr $(expr ${size} / 1024) - 2 # just to make sure we don't go past the end of the drive
+  fi
 }
 
 human_size_to_mb() {

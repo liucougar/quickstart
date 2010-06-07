@@ -10,6 +10,7 @@ create_qemu_img(){
     die "pre_partition can't create gentoo image file ${filename}"
   fi
 }
+nbd_device=
 mount_qemu_img(){
   local filename=$1
   local device=${2:-"/dev/nbd0"}
@@ -35,6 +36,7 @@ mount_qemu_img(){
   if ! qemu-nbd -c "${device}" "${filename}"; then
     die "qmeu-nbd failed to load ${filename} and connect it to ${device}"
   fi
+  nbd_device="${device}"
   local timeout=10
   local count=0
   while ! get_device_size_in_mb ${device} > /dev/null 2>&1; do
@@ -45,4 +47,22 @@ mount_qemu_img(){
     sleep 1
     count=$(expr $count + 1)
   done
+}
+
+cleanup_nbd() {
+  if [ ! -z "${nbd_device}" ]; then
+    debug cleanup_nbd "disconnect nbd device ${nbd_device}"
+    if ! spawn "qemu-nbd -d \"${nbd_device}\""; then
+      warn "cleanup_nbd: Failed to disconnect nbd device ${nbd_device}"
+    fi
+  fi
+}
+
+#run cleanup whenever quickstart exits, no matter whether it succeeds or not
+post_finishing_cleanup() {
+  cleanup_nbd
+}
+
+post_failure_cleanup(){
+  cleanup_nbd
 }

@@ -241,6 +241,10 @@ setup_fstab() {
   for mount in ${localmounts}; do
     debug setup_fstab "mount is ${mount}"
     local devnode=$(echo ${mount} | cut -d ':' -f5)
+    if [ ${devnode} == 'temp' ]; then
+      debug setup_fstab "skip temp ${mount}"
+      continue
+    fi
     local type=$(echo ${mount} | cut -d ':' -f2)
     local mountpoint=$(echo ${mount} | cut -d ':' -f3)
     local mountopts=$(echo ${mount} | cut -d ':' -f4)

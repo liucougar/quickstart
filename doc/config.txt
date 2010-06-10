@@ -85,7 +85,9 @@ mountfs - Mounts a filesystem
     mountpoint - the directory to mount the filesystem
     mountopts  - additional options to use when mounting
     realdevice - device name in the new machine (if omitted, same as device,
-                 such as /dev/hda1)
+                 such as /dev/hda1). If "temp" is specified as realdevice,
+                 this device will be mounted into the chrooted filesystem,
+                 but it won't be in the fstab
 
 
 netmount - Mounts a network filesystem

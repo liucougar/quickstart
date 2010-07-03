@@ -167,7 +167,8 @@ tree_type - Specifies the portage tree type (defaults to sync)
     type - the method for fetching the portage tree (sync, webrsync, or
            snapshot). you can also use 'none' to skip this step
     uri  - URI to the location of the portage snapshot if you specified
-           'snapshot' for the type
+           'snapshot' for the type. The file should be a .bz2 archive (lzma is
+	   not currently supported)
 
 
 bootloader_install_device - Specifies the device to install the bootloader to

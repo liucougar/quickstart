@@ -36,6 +36,7 @@ Options:
   -s|--sanity-check    Sanity check install profile and exit
   -c|--client <host>   Act as a client and connect to a quickstartd
   --version            Print version and exit
+  --                   all arguments after this is passed to the profile
 
 Arguments:
   profile              Path to an install profile
@@ -93,6 +94,11 @@ do
       echo "Quickstart version ${VERSION}"
       exit 0
       ;;
+    --)
+      #remaining args are considered to be arguments to the profile script
+      profile_args=$@
+      shift $#
+      ;;
     -*)
       usage "You have specified an invalid option: ${a}"
       exit 1
@@ -119,7 +125,8 @@ if [ ! -f "${profile}" ]; then
   error "Specified profile does not exist!"
   exit 1
 else
-  . "${profile}"
+  profile_path="$(cd ${profile%/*} && pwd -P)"
+  . "${profile}" ${profile_args}
   if ! touch ${logfile} 2>/dev/null; then
     error "Logfile is not writeable!"
     exit 1

@@ -308,12 +308,11 @@ sanity_check_config() {
 #    bootloader="grub"
 #  fi
 
-  if ! sanity_check_config_partition; then
-    fatal=1
-  fi
-  if ! sanity_check_config_bootloader; then
-    fatal=1
-  fi
+  for f in $(find_functions "sanity_check_config_"); do
+    if ! $f; then
+      fatal=1
+    fi
+  done
 
   debug sanity_check_config "$(set | grep '^[a-z]')"
 

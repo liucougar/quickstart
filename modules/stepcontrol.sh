@@ -10,6 +10,11 @@ isafunc() {
   fi
 }
 
+find_functions() {
+  local name=$1
+  echo $(declare -F | awk "/declare -f $name/{print \$3}")
+}
+
 runstep() {
   local func=$1
   local descr=$2

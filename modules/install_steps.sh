@@ -185,11 +185,19 @@ install_portage_tree() {
   fi
 }
 
+set_password() {
+  local username=$1
+  local pswd=$2
+  local opts=${3:-"-m"}
+
+  spawn_chroot "echo '${username}:${pswd}' | chpasswd ${opts}" || die "could not set $username password"
+}
+
 set_root_password() {
   if [ -n "${root_password_hash}" ]; then
-    spawn_chroot "echo 'root:${root_password_hash}' | chpasswd -e" || die "could not set root password"
+    set_password root "${root_password_hash}" "-e"
   elif [ -n "${root_password}" ]; then
-    spawn_chroot "echo 'root:${root_password}' | chpasswd -m" || die "could not set root password"
+    set_password root "${root_password}"
   fi
 }
 

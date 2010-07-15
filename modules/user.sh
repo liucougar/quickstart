@@ -39,8 +39,8 @@ add_ssh_file() {
 }
 
 add_ssh_config() {
-    local filename=$1
-    local user=$2
+    local user=$1
+    local filename=$2
     local value="$3"
 
     local homedir="$(find_user_home "$user")"

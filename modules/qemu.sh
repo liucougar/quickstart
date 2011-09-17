@@ -14,6 +14,7 @@ nbd_device=
 mount_qemu_img(){
   local filename=$1
   local device=${2:-"/dev/nbd0"}
+  local opts=$3
 
   if [ ! -b /dev/nbd0 ]; then
     #max_part=8 to enable partitions
@@ -33,7 +34,7 @@ mount_qemu_img(){
     ps aux | grep qemu-nbd | grep ${device}
     die "${device} is already connected."
   fi
-  if ! qemu-nbd -c "${device}" "${filename}"; then
+  if ! qemu-nbd ${opts} -c "${device}" "${filename}"; then
     die "qmeu-nbd failed to load ${filename} and connect it to ${device}"
   fi
   nbd_device="${device}"
@@ -52,7 +53,9 @@ mount_qemu_img(){
 cleanup_nbd() {
   if [ ! -z "${nbd_device}" ]; then
     debug cleanup_nbd "disconnect nbd device ${nbd_device}"
-    if ! spawn "qemu-nbd -d \"${nbd_device}\""; then
+    if mount | grep ${nbd_device} > /dev/null 2>&1; then
+      warn "${nbd_device} is still mounted! not disconnect nbd device."
+    elif ! spawn "qemu-nbd -d \"${nbd_device}\""; then
       warn "cleanup_nbd: Failed to disconnect nbd device ${nbd_device}"
     fi
   fi

@@ -1,3 +1,4 @@
+#build a 32bit gentoo KVM image
 use_linux32
 
 #part nbd0 1 83 +

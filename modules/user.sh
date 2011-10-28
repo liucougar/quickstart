@@ -9,7 +9,7 @@ add_user() {
     local name=$1
     local groups=${2:+"-G $2"}
     local password=${3:-"$(random_password)"}
-    spawn_chroot "adduser -m ${groups} $name"
+    spawn_chroot "useradd -m ${groups} $name"
     set_password "$name" "$password"
 }
 

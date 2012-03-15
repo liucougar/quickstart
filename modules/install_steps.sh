@@ -112,9 +112,12 @@ mount_local_partitions() {
           spawn "swapon ${devnode}" || warn "could not activate swap ${devnode}"
           echo "${devnode}" >> /tmp/install.swapoff
           ;;
-        ext2|ext3|ext4|reiserfs|reiserfs3|xfs)
+        ext2|ext3|ext4|reiserfs|reiserfs3|xfs|auto)
           echo "mount -t ${type} ${devnode} ${chroot_dir}${mountpoint} ${mountopts}" >> /tmp/install.mount
           echo "${chroot_dir}${mountpoint}" >> /tmp/install.umount
+          ;;
+        *)
+          warn "Unknown mount type: $type. Ignored."
           ;;
       esac
     done

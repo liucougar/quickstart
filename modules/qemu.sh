@@ -2,11 +2,12 @@ create_qemu_img(){
   local filename=$1
   local size=${2:-"100M"}
   local format=${3:-"qcow2"}
+  local options=${4:+"-o ${4}"}
 
   if [ -f ${filename} ]; then
     die "${filename} already exists"
   fi
-  if ! spawn "qemu-img create -f ${format} ${filename} ${size}"; then
+  if ! spawn "qemu-img create ${options} -f ${format} ${filename} ${size}"; then
     die "pre_partition can't create gentoo image file ${filename}"
   fi
 }

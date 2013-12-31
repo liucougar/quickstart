@@ -322,8 +322,9 @@ configure_bootloader() {
   if [ "${bootloader}" = "none" ]; then
     debug configure_bootloader "bootloader is 'none'...skipping configuration"
   else
-    if $(isafunc configure_bootloader_${bootloader}); then
-      configure_bootloader_${bootloader} || die "could not configure bootloader ${bootloader}"
+    local bl=${bootloader%:*} #remove slot
+    if $(isafunc configure_bootloader_${bl}); then
+      configure_bootloader_${bl} || die "could not configure bootloader ${bootloader}"
     else
       die "I don't know how to configure ${bootloader}"
     fi

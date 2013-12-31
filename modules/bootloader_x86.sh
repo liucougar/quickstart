@@ -3,8 +3,19 @@
 sanity_check_config_bootloader() {
   if [ -z "${bootloader}" ]; then
     warn "bootloader not set...assuming grub"
-    bootloader="grub"
+    bootloader="grub:0"
   fi
+}
+
+configure_bootloader_grub_2() {
+  #local boot_root="$(get_boot_and_root)"
+  #local boot="$(echo ${boot_root} | cut -d '|' -f1)"
+  [ -z "${bootloader_install_device}" ] && die "no bootloader_install_device is specified" #bootloader_install_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
+  if ! spawn_chroot "grub2-install ${bootloader_install_device}"; then
+    error "could not install grub to ${bootloader_install_device}"
+    return 1
+  fi
+  spawn_chroot "grub2-mkconfig -o /boot/grub/grub.cfg" || die "failed to generate grub.cfg file"
 }
 
 configure_bootloader_grub() {

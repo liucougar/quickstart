@@ -161,15 +161,11 @@ prepare_chroot() {
   spawn "mount -t proc none ${chroot_dir}/proc" || die "could not mount proc"
   echo "${chroot_dir}/proc" >> /tmp/install.umount
   debug prepare_chroot "bind-mounting /dev"
-  spawn "mount -o bind /dev ${chroot_dir}/dev" || die "could not bind-mount /dev"
+  spawn "mount --rbind /dev ${chroot_dir}/dev" || die "could not bind-mount /dev"
   echo "${chroot_dir}/dev" >> /tmp/install.umount
-  if [ "$(uname -r | cut -d. -f 2)" = "6" ]; then
-    debug prepare_chroot "bind-mounting /sys"
-    spawn "mount -o bind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
-    echo "${chroot_dir}/sys" >> /tmp/install.umount
-  else
-    debug prepare_chroot "kernel is not 2.6...not bind-mounting /sys"
-  fi
+  debug prepare_chroot "bind-mounting /sys"
+  spawn "mount --rbind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
+  echo "${chroot_dir}/sys" >> /tmp/install.umount
 }
 
 install_portage_tree() {
@@ -359,7 +355,7 @@ finishing_cleanup() {
   spawn "cp ${logfile} ${chroot_dir}/root/$(basename ${logfile})" || warn "could not copy install logfile into chroot"
   if [ -e /tmp/install.umount ]; then
     for mnt in $(sort -r /tmp/install.umount); do
-      spawn "umount ${mnt}" || warn "could not unmount ${mnt}"
+      spawn "umount -l ${mnt}" || warn "could not unmount ${mnt}"
       rm /tmp/install.umount 2>/dev/null
     done
   fi
@@ -375,7 +371,7 @@ failure_cleanup() {
   spawn "mv ${logfile} ${logfile}.failed" || warn "could not move ${logfile} to ${logfile}.failed"
   if [ -e /tmp/install.umount ]; then
     for mnt in $(sort -r /tmp/install.umount); do
-      spawn "umount ${mnt}" || warn "could not unmount ${mnt}"
+      spawn "umount -l ${mnt}" || warn "could not unmount ${mnt}"
     done
     rm /tmp/install.umount 2>/dev/null
   fi

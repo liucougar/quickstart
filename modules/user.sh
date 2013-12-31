@@ -27,7 +27,8 @@ add_ssh_file() {
     local abshomedir="${chroot_dir}$homedir"
     if [ -n "$abshomedir" -a -d "$abshomedir" ]; then
 	#create the .ssh dir as the user if not already exist
-        spawn_chroot "su -c 'mkdir -p \"${homedir}/.ssh/\"' $user" || die "failed to mkdir $abshomedir/.ssh dir"
+        spawn_chroot "mkdir -p ${homedir}/.ssh/" || die "failed to mkdir $abshomedir/.ssh dir"
+        spawn_chroot "chown $user:$user  \"${homedir}/.ssh/\"" || die "failed to chown $abshomedir/.ssh to user $user"
         cp "$idfile" "${abshomedir}/.ssh/${filename}" || die "failed to copy $idfile to ${abshomedir}/.ssh/${filename}"
 	#spawn_chroot is needed because the user may not exist on host
 	spawn_chroot "chown ${user}:${user} $homedir/.ssh/${filename}" || die "failed to chown $homedir/.ssh/${filename}"

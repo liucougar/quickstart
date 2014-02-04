@@ -1,0 +1,47 @@
+#!/bin/bash
+ROOT=$1
+IMAGE=
+if [ -z "$ROOT" ]; then
+echo "no root is specified"
+exit 1
+fi
+
+function attach(){
+	ROOT=$1
+	if [ -f $ROOT ]; then
+		IMAGE="$ROOT"
+		if [ ! -S /var/lock/qemu-nbd-nbd0 ]; then
+			qemu-nbd -c /dev/nbd0 $IMAGE
+			mount /dev/nbd0p1 /mnt/gentoo
+		fi
+		ROOT=/mnt/gentoo
+	fi
+	VERB="mount -o bind"
+	$VERB /dev/ $ROOT/dev     
+	$VERB /proc/ $ROOT/proc
+	$VERB /sys/ $ROOT/sys 
+	$VERB /usr/portage/distfiles/ $ROOT/usr/portage/distfiles
+	echo 'mounted'
+}
+
+function detach(){
+#if mount | grep $ROOT/dev > /dev/null; then
+	VERB="umount -l"
+	echo 'umounting'
+	$VERB $ROOT/dev
+	$VERB $ROOT/proc
+	$VERB $ROOT/sys
+	$VERB $ROOT/usr/portage/distfiles
+	if [ ! -z "$IMAGE" ]; then
+		if [ -S /var/lock/qemu-nbd-nbd0 ]; then
+			umount /mnt/gentoo
+			qemu-nbd -d /dev/nbd0
+		fi
+	fi
+}
+
+attach $ROOT
+echo "Entering chroot $ROOT"
+chroot $ROOT
+echo "Exiting chroot $ROOT"
+detach $ROOT
